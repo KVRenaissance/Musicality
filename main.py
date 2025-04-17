@@ -51,31 +51,43 @@ def pause_song():
 def next_song():
     global current_song, paused
 
-    try:
-        songlist.selection_clear(0, END) # Clear the current selection
+    songlist.selection_clear(0, END) # Clear the current selection
+    if (songs.index(current_song) + 1) >= len(songs):
+        songlist.selection_set(len(songs) - 1) # Select the last song if we are at the end
+    else:
         songlist.selection_set(songs.index(current_song) + 1) # Select the next song
-        current_song = songs[songlist.curselection()[0]] # Get the next song in the list
-        play_song() # Play the next song
-    except:
-        pass
+    current_song = songs[songlist.curselection()[0]] # Get the next song in the list
+    play_song() # Play the next song
 
 def previous_song():
     global current_song, paused
 
-    try:
-        songlist.selection_clear(0, END) # Clear the current selection
+    songlist.selection_clear(0, END) # Clear the current selection
+    if (songs.index(current_song) - 1) < 0:
+        songlist.selection_set(0) # Select the first song if we are at the beginning
+    else:
         songlist.selection_set(songs.index(current_song) - 1) # Select the previous song
-        current_song = songs[songlist.curselection()[0]] # Get the previous song in the list
-        play_song() # Play the previous song
-    except:
-        pass
+    current_song = songs[songlist.curselection()[0]] # Get the previous song in the list
+    play_song() # Play the previous song
 
 organise_menu = Menu(menubar, tearoff=False)
 organise_menu.add_command(label="Add Folder", command=add_folder)
 menubar.add_cascade(label="Organise", menu=organise_menu)
 
-songlist = Listbox(root, bg="black", fg="white", width=100, height=15)
+# Add a scrollbar
+scrollbar = Scrollbar(root, orient=VERTICAL)
+
+songlist = Listbox(root, bg="black", fg="white", width=100, height=15, yscrollcommand=scrollbar.set, selectmode=SINGLE)
+scrollbar.config(command=songlist.yview)
+scrollbar.pack(side=RIGHT, fill=(Y))
 songlist.pack()
+
+def on_select(event):
+    # Get the index of the current selected item
+    selected_index = songlist.curselection()
+    if selected_index:
+        # Is it visible?
+        songlist.see(selected_index[0])
 
 play_btn_image = PhotoImage(file="play.png")
 pause_btn_image = PhotoImage(file="pause.png")
@@ -94,5 +106,7 @@ play_btn.grid(row=0, column=1, padx=7, pady=10)
 pause_btn.grid(row=0, column=2, padx=7, pady=10)
 next_btn.grid(row=0, column=3, padx=7, pady=10)
 prev_btn.grid(row=0, column=0, padx=7, pady=10)
+
+songlist.bind("<<ListboxSelect>>", on_select) # Bind the select event to the songlist
 
 root.mainloop()
