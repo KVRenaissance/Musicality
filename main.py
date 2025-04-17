@@ -8,6 +8,13 @@ root.geometry("500x300")
 
 pygame.mixer.init()
 
+menubar = Menu(root)
+root.config(menu=menubar)
+
+organise_menu = Menu(menubar)
+organise_menu.add_command(label="Add Folder")
+menubar.add_cascade(label="Organise", menu=organise_menu)
+
 songlist = Listbox(root, bg="black", fg="white", width=100, height=15)
 songlist.pack()
 
