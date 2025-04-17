@@ -17,5 +17,6 @@ next_btn_image = PhotoImage(file="next.png")
 prev_btn_image = PhotoImage(file="prev.png")
 
 control_frame = Frame(root)
+control_frame.pack()
 
 root.mainloop()
