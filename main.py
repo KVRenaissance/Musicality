@@ -11,7 +11,7 @@ pygame.mixer.init()
 menubar = Menu(root)
 root.config(menu=menubar)
 
-organise_menu = Menu(menubar)
+organise_menu = Menu(menubar, tearoff=False)
 organise_menu.add_command(label="Add Folder")
 menubar.add_cascade(label="Organise", menu=organise_menu)
 
